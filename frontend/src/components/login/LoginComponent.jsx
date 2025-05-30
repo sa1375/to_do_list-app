@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useUser } from "../context/UserContext";
-import axios from "axios";
+import api from "../utils/api"; // Import the configured axios instance
 
 function LoginComponent({ setCurrentPage }) {
-  const { setUser, setUsername } = useUser(); // Access setUsername from context
+  const { setUser, setUsername } = useUser();
   const [username, setLocalUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -15,9 +15,8 @@ function LoginComponent({ setCurrentPage }) {
     }
   }, [setCurrentPage]);
 
-  // Update context whenever local username changes
   useEffect(() => {
-    setUsername(username); // Sync local username with context
+    setUsername(username);
   }, [username, setUsername]);
 
   const handleLogin = async () => {
@@ -26,14 +25,15 @@ function LoginComponent({ setCurrentPage }) {
       return;
     }
     try {
-      const response = await axios.post("http://localhost:8000/api/token/", {
+      const response = await api.post("/api/token/", {
         username,
         password,
       });
       localStorage.setItem("access_token", response.data.access);
+      localStorage.setItem("refresh_token", response.data.refresh);
       localStorage.setItem("isLoggedIn", "1");
       setCurrentPage("dashboard");
-      setUser({ username }); // Store user data in context
+      setUser({ username });
     } catch (error) {
       if (error.response) {
         setErrorMessage("Invalid credentials. Please try again.");

@@ -1,4 +1,5 @@
 import React, {useReducer, useState} from "react";
+import api from "../utils/api.js"
 import axios from "axios";
 
 // Initial state for the reducer
@@ -50,7 +51,7 @@ function RegisterComponent({setCurrentPage}) {
 
         setLoading(true);
         try {
-            const response = await axios.post("http://localhost:8000/api/register/", {
+            const response = await api.post("http://localhost:8000/api/register/", {
                 username: state.username,
                 email: state.email,
                 first_name: state.firstName,

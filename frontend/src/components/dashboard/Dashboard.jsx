@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import TaskCreatingModal from "./TaskCreatingModal";
 import DashboardHeader from "../dashboard/DashboardHeader.jsx";
 import TaskCard from "../UI/TaskCard.jsx";
-import axios from "axios";
+import api from "../utils/api.js"
+// import axios from "axios";
 
 function Dashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -10,7 +11,7 @@ function Dashboard() {
   const [expandedTaskId, setExpandedTaskId] = useState(null); // Track the expanded task
 
   useEffect(() => {
-    axios
+    api
       .get("http://localhost:8000/api/tasks/", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -22,7 +23,7 @@ function Dashboard() {
   }, []);
 
   const handleAddTask = (newTask) => {
-    axios
+    api
       .post("http://localhost:8000/api/tasks/", newTask, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -35,7 +36,7 @@ function Dashboard() {
   };
 
   const handleEditTask = (taskId, updatedTask) => {
-    axios
+    api
       .patch(`http://localhost:8000/api/tasks/${taskId}/`, updatedTask, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -49,7 +50,7 @@ function Dashboard() {
   };
 
   const handleDeleteTask = (taskId) => {
-    axios
+    api
       .delete(`http://localhost:8000/api/tasks/${taskId}/`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
