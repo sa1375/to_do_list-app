@@ -85,7 +85,7 @@ function Dashboard() {
           onSubmit={handleAddTask}
         />
 
-        <div className="grid grid-cols-1 gap-4 mt-4 sm:grid-cols-2 sm:gap-6 md:grid-cols-3 md:gap-8 lg:grid-cols-4 lg:gap-10 relative">
+        <div className="grid grid-cols-1 mt-4 sm:grid-cols-2  md:grid-cols-3 lg:grid-cols-4 relative">
           {tasks.map((task) => (
             <TaskCard
               key={task.id}
