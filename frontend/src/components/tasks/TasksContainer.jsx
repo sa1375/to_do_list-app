@@ -1,26 +1,29 @@
 import React, { useState, useEffect } from "react";
 import TaskCard from "../UI/TaskCard";
 import api from "../utils/api";
-import Calendar from "../UI/Calendar"; // Import the new Calendar component
+import Calendar from "../UI/Calendar";
 
 function TaskContainer() {
-  const [tasks, setTasks] = useState([]); // All tasks fetched from API
-  const [filteredTasks, setFilteredTasks] = useState([]); // Filtered tasks based on date range
+  const [tasks, setTasks] = useState([]);
+  const [filteredTasks, setFilteredTasks] = useState([]);
   const [expandedTaskId, setExpandedTaskId] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Fetch all tasks on mount
   useEffect(() => {
+    setLoading(true);
     api
       .get("/api/tasks/")
       .then((response) => {
         setTasks(response.data);
-        // Initially set filtered tasks to all tasks (or filter by today by default)
         setFilteredTasks(response.data);
+        setLoading(false);
       })
-      .catch((error) => console.error("Error fetching tasks:", error));
+      .catch((error) => {
+        console.error("Error fetching tasks:", error);
+        setLoading(false);
+      });
   }, []);
 
-  // Handle date range change from Calendar
   const handleDateRangeChange = (startDate, endDate) => {
     const filtered = tasks.filter((task) => {
       const dueDate = new Date(task.due_date);
@@ -29,7 +32,6 @@ function TaskContainer() {
     setFilteredTasks(filtered);
   };
 
-  // Handlers for task actions
   const handleComplete = (taskId, updatedTask) => {
     api
       .patch(`/api/tasks/${taskId}/`, updatedTask)
@@ -76,27 +78,37 @@ function TaskContainer() {
   };
 
   return (
-    <div className="p-4">
-      {/* Render the new Calendar component */}
-      <Calendar onDateRangeChange={handleDateRangeChange} />
-
-      {/* Render filtered tasks */}
-      <h2 className="text-2xl font-semibold mb-4">Filtered Tasks</h2>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {filteredTasks.length > 0 ? (
-          filteredTasks.map((task) => (
-            <TaskCard
-              key={task.id}
-              task={task}
-              onComplete={handleComplete}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-              isExpanded={expandedTaskId === task.id}
-              onToggleExpand={() => toggleExpand(task.id)}
-            />
-          ))
+    <div className="min-h-screen bg-gray-50 p-6">
+      <header className="mb-6">
+        <h1 className="text-3xl font-bold text-gray-800">Your Tasks</h1>
+      </header>
+      <div className="mb-8">
+        <Calendar onDateRangeChange={handleDateRangeChange} tasks={tasks} />
+      </div>
+      <div className="bg-white p-6 rounded-lg shadow-sm">
+        <h2 className="text-2xl font-semibold text-gray-800 mb-4">Filtered Tasks</h2>
+        {loading ? (
+          <div className="flex justify-center items-center h-48">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500"></div>
+          </div>
         ) : (
-          <p>No tasks for the selected date range.</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredTasks.length > 0 ? (
+              filteredTasks.map((task) => (
+                <TaskCard
+                  key={task.id}
+                  task={task}
+                  onComplete={handleComplete}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                  isExpanded={expandedTaskId === task.id}
+                  onToggleExpand={() => toggleExpand(task.id)}
+                />
+              ))
+            ) : (
+              <p className="text-gray-500">No tasks for the selected date range.</p>
+            )}
+          </div>
         )}
       </div>
     </div>

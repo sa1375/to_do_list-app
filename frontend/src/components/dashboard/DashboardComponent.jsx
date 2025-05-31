@@ -74,7 +74,7 @@ function DashboardComponent() {
             >
                 {activePage === "dashboard" && <Dashboard setActivePage={setActivePage}/>}
                 {/*{activePage === "profile" && <Profile setActivePage={setActivePage}/>}*/}
-                {activePage === "tasks" && <TaskContainer setActivePage={setActivePage}/>}
+                {activePage === "TasksContainer" && <TaskContainer setActivePage={setActivePage}/>}
             </div>
         </div>
     )
