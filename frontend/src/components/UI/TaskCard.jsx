@@ -16,11 +16,11 @@ export default function TaskCard({
     const getCardGradient = () => {
         switch (task.priority) {
             case "High":
-                return "bg-gradient-to-br from-red-400 to-pink-500";
+                return "bg-gradient-to-br from-orange-500 to-red-400";
             case "Medium":
-                return "bg-gradient-to-br from-blue-400 to-indigo-500";
+                return "bg-gradient-to-br from-teal-600 to-blue-500";
             case "Low":
-                return "bg-gradient-to-br from-green-400 to-teal-500";
+                return "bg-gradient-to-br from-green-600 to-emerald-500";
             default:
                 return "bg-gradient-to-br from-gray-400 to-gray-500";
         }

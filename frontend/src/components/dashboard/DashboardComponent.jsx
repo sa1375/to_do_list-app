@@ -19,7 +19,7 @@ function DashboardComponent() {
         <div className="flex min-h-screen overflow-auto">
             {/* Sidebar */}
             <div
-                className={`bg-gradient-to-br from-blue-800/80 to-blue-700/80 text-white fixed top-0 left-0 h-full w-64 transform transition-transform duration-250 ${
+                className={`bg-gradient-to-br from-purple-900 to-indigo-800 text-white fixed top-0 left-0 h-full w-64 transform transition-transform duration-250 ${
                     isSidebarOpen ? "translate-x-0" : "-translate-x-64"
                 }`}
             >
