@@ -2,6 +2,7 @@ import {useState} from "react";
 import {Bars3Icon, UsersIcon, ArrowLeftStartOnRectangleIcon} from "@heroicons/react/24/outline";
 import SearchBar from "../UI/SearchBar.jsx";
 import Dashboard from "./Dashboard.jsx"; // ✅ Split-screen icon
+import TaskContainer from "../tasks/TasksContainer.jsx" ;
 
 
 function DashboardComponent() {
@@ -18,7 +19,7 @@ function DashboardComponent() {
         <div className="flex min-h-screen overflow-auto">
             {/* Sidebar */}
             <div
-                className={`bg-blue-800/90 text-white fixed top-0 left-0 h-full w-64 transform transition-transform duration-250 ${
+                className={`bg-gradient-to-br from-blue-800/80 to-blue-700/80 text-white fixed top-0 left-0 h-full w-64 transform transition-transform duration-250 ${
                     isSidebarOpen ? "translate-x-0" : "-translate-x-64"
                 }`}
             >
@@ -36,7 +37,7 @@ function DashboardComponent() {
                         className={`p-3 hover:text-xl hover:font-bold cursor-pointer ${
                             activePage === "tasks" ? "text-xl font-bold" : ""}`}
                         onClick={() => {
-                            setActivePage('tasks');
+                            setActivePage('TasksContainer');
                         }}
                     >
                         Tasks
@@ -73,7 +74,7 @@ function DashboardComponent() {
             >
                 {activePage === "dashboard" && <Dashboard setActivePage={setActivePage}/>}
                 {/*{activePage === "profile" && <Profile setActivePage={setActivePage}/>}*/}
-                {/*{activePage === "tasks" && <Tasks setActivePage={setActivePage}/>}*/}
+                {activePage === "tasks" && <TaskContainer setActivePage={setActivePage}/>}
             </div>
         </div>
     )
