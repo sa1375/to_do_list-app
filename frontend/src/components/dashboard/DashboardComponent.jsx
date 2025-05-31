@@ -1,5 +1,6 @@
 import {useState} from "react";
 import {Bars3Icon, UsersIcon, ArrowLeftStartOnRectangleIcon} from "@heroicons/react/24/outline";
+import SearchBar from "../UI/SearchBar.jsx";
 import Dashboard from "./Dashboard.jsx"; // ✅ Split-screen icon
 
 
@@ -55,6 +56,7 @@ function DashboardComponent() {
 
                 {/* User Profile Section */}
                 <div className="flex items-center space-x-4">
+                    <SearchBar />
                     <UsersIcon className="mr-8 h-9 w-9 text-blue-700 cursor-pointer"
                                onClick={() => setActivePage("profile")}/>
                     <ArrowLeftStartOnRectangleIcon onClick={handleLogout}
