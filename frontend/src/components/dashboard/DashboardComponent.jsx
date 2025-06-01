@@ -3,6 +3,7 @@ import {Bars3Icon, UsersIcon, ArrowLeftStartOnRectangleIcon} from "@heroicons/re
 import SearchBar from "../UI/SearchBar.jsx";
 import Dashboard from "./Dashboard.jsx"; // ✅ Split-screen icon
 import TaskContainer from "../tasks/TasksContainer.jsx" ;
+import Profile from "./Profile.jsx"
 
 
 function DashboardComponent() {
@@ -73,7 +74,7 @@ function DashboardComponent() {
                 }`}
             >
                 {activePage === "dashboard" && <Dashboard setActivePage={setActivePage}/>}
-                {/*{activePage === "profile" && <Profile setActivePage={setActivePage}/>}*/}
+                {activePage === "profile" && <Profile setActivePage={setActivePage}/>}
                 {activePage === "TasksContainer" && <TaskContainer setActivePage={setActivePage}/>}
             </div>
         </div>
