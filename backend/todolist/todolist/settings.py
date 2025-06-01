@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-e0qsog&n%3#t!&wf@87sb_t+2)ak$9%j!_qhz(v4j_#qa-i30)'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
@@ -147,12 +147,9 @@ SIMPLE_JWT = {
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  #  frontend
+    "https://your-netlify-app.netlify.app",  # Add your Netlify URL here later
 ]
 
 AUTH_USER_MODEL = 'tasks.CustomUser' 
 
-# superAdmin_info: {
-#     'username': 'todo_admin' ,
-#     'email': '1375saeed1375@gmail.com',
-#     'password': 'todo_admin_password',
-# }
+
