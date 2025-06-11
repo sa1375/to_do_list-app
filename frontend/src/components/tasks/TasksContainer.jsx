@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import TaskCard from "../UI/TaskCard";
 import api from "../utils/api";
 import Calendar from "../UI/Calendar";
@@ -10,6 +10,7 @@ function TaskContainer() {
     const [expandedTaskId, setExpandedTaskId] = useState(null);
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [dateRange, setDateRange] = useState({ startDate: null, endDate: null });
 
     useEffect(() => {
         setLoading(true);
@@ -17,7 +18,7 @@ function TaskContainer() {
             .get("/api/tasks/")
             .then((response) => {
                 setTasks(response.data);
-                setFilteredTasks(response.data);
+                setFilteredTasks(response.data); // Initialize filteredTasks with all tasks
                 setLoading(false);
             })
             .catch((error) => {
@@ -26,12 +27,18 @@ function TaskContainer() {
             });
     }, []);
 
-    const handleDateRangeChange = (startDate, endDate) => {
-        const filtered = tasks.filter((task) => {
+    // Memoize filtered tasks based on tasks and dateRange
+    const memoizedFilteredTasks = useMemo(() => {
+        if (!dateRange.startDate || !dateRange.endDate) return tasks; // Return all tasks if no date range is set
+        return tasks.filter((task) => {
             const dueDate = new Date(task.due_date);
-            return dueDate >= startDate && dueDate <= endDate;
+            return dueDate >= dateRange.startDate && dueDate <= dateRange.endDate;
         });
-        setFilteredTasks(filtered);
+    }, [tasks, dateRange.startDate, dateRange.endDate]);
+
+    const handleDateRangeChange = (startDate, endDate) => {
+        setDateRange({ startDate, endDate });
+        setFilteredTasks(memoizedFilteredTasks); // Update filteredTasks when date range changes
     };
 
     const handleComplete = (taskId, updatedTask) => {
@@ -41,9 +48,7 @@ function TaskContainer() {
                 setTasks((prevTasks) =>
                     prevTasks.map((task) => (task.id === taskId ? response.data : task))
                 );
-                setFilteredTasks((prevFiltered) =>
-                    prevFiltered.map((task) => (task.id === taskId ? response.data : task))
-                );
+                // No need to update filteredTasks here; memoizedFilteredTasks will recompute
             })
             .catch((error) => console.error("Error completing task:", error));
     };
@@ -55,9 +60,7 @@ function TaskContainer() {
                 setTasks((prevTasks) =>
                     prevTasks.map((task) => (task.id === taskId ? response.data : task))
                 );
-                setFilteredTasks((prevFiltered) =>
-                    prevFiltered.map((task) => (task.id === taskId ? response.data : task))
-                );
+                // No need to update filteredTasks here; memoizedFilteredTasks will recompute
             })
             .catch((error) => console.error("Error editing task:", error));
     };
@@ -67,10 +70,8 @@ function TaskContainer() {
             .delete(`/api/tasks/${taskId}/`)
             .then(() => {
                 setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
-                setFilteredTasks((prevFiltered) =>
-                    prevFiltered.filter((task) => task.id !== taskId)
-                );
                 if (expandedTaskId === taskId) setExpandedTaskId(null);
+                // No need to update filteredTasks here; memoizedFilteredTasks will recompute
             })
             .catch((error) => console.error("Error deleting task:", error));
     };
@@ -79,13 +80,16 @@ function TaskContainer() {
         setExpandedTaskId(expandedTaskId === taskId ? null : taskId);
     };
 
-      const handleAddTask = (newTask) => {
-    api
-      .post("/api/tasks/", newTask)
-      .then((response) => setTasks((prevTasks) => [...prevTasks, response.data]))
-      .catch((error) => console.error("Error adding task:", error));
-    setIsModalOpen(false);
-  };
+    const handleAddTask = (newTask) => {
+        api
+            .post("/api/tasks/", newTask)
+            .then((response) => {
+                setTasks((prevTasks) => [...prevTasks, response.data]);
+                // No need to update filteredTasks here; memoizedFilteredTasks will recompute
+            })
+            .catch((error) => console.error("Error adding task:", error));
+        setIsModalOpen(false);
+    };
 
     return (
         <div className="min-h-screen bg-gray-50 p-6">
@@ -93,7 +97,7 @@ function TaskContainer() {
                 <h1 className="text-3xl font-bold text-gray-800">Your Tasks</h1>
             </header>
             <div className="mb-8">
-                <Calendar onDateRangeChange={handleDateRangeChange} tasks={tasks}/>
+                <Calendar onDateRangeChange={handleDateRangeChange} tasks={tasks} />
             </div>
             <div className="bg-white p-6 rounded-lg shadow-sm">
                 <h2 className="text-2xl font-semibold text-gray-800 mb-4">Filtered Tasks</h2>
@@ -103,8 +107,8 @@ function TaskContainer() {
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {filteredTasks.length > 0 ? (
-                            filteredTasks.map((task) => (
+                        {memoizedFilteredTasks.length > 0 ? (
+                            memoizedFilteredTasks.map((task) => (
                                 <TaskCard
                                     key={task.id}
                                     task={task}
@@ -121,7 +125,6 @@ function TaskContainer() {
                     </div>
                 )}
             </div>
-            {/* Add Task Button */}
             <button
                 onClick={() => setIsModalOpen(true)}
                 className="fixed bottom-6 right-6 px-6 py-3 bg-pink-500 text-white rounded-full shadow-lg hover:bg-pink-600 transition-all cursor-pointer"
