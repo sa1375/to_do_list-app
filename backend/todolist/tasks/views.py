@@ -96,3 +96,9 @@ class UserInfoAPIView(APIView):
             "gender": user.gender,
         }
         return Response(user_data, status=status.HTTP_200_OK)
+
+
+
+class HealthCheckView(APIView):
+    def get(self, request):
+        return Response({"status": "OK"}, status=status.HTTP_200_OK)
